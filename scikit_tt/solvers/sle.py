@@ -3,7 +3,11 @@
 
 import numpy as np
 import scipy.linalg as lin
+import pyamg
 from typing import List
+
+from scipy.sparse import csr_matrix
+
 from scikit_tt.tensor_train import TT
 
 
@@ -507,6 +511,9 @@ def __update_core_als(i: int,
     if solver == 'lu':
         lu = lin.lu_factor(micro_op, overwrite_a=True, check_finite=False)
         solution.cores[i] = lin.lu_solve(lu, micro_rhs, trans=0, overwrite_b=True, check_finite=False)
+    if solver == 'ruge_stuben':
+        ml = pyamg.ruge_stuben_solver(csr_matrix(micro_op))
+        solution.cores[i] = ml.solve(micro_rhs, tol=1e-10)
 
     # reshape solution and orthonormalization
     # ---------------------------------------
