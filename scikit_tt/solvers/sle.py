@@ -513,7 +513,7 @@ def __update_core_als(i: int,
         solution.cores[i] = lin.lu_solve(lu, micro_rhs, trans=0, overwrite_b=True, check_finite=False)
     if solver == 'ruge_stuben':
         ml = pyamg.ruge_stuben_solver(csr_matrix(micro_op))
-        solution.cores[i] = ml.solve(micro_rhs, tol=1e-10)
+        solution.cores[i] = ml.solve(micro_rhs, tol=1e-10, accel="cg")
 
     # reshape solution and orthonormalization
     # ---------------------------------------
